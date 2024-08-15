@@ -1,0 +1,5 @@
+pytest
+pycurl
+black
+certifi
+pydantic>=2.0.0
