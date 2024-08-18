@@ -39,7 +39,7 @@ class Model:
             f"{self.url}/infer_text", request.model_dump()
         )
         if response_code != 200:
-            raise error_factory(resp)
+            raise error_factory(response_code, resp)
         return resp
 
     def infer_image(self, image: Union[List[str], str] = [], normalize: bool = True):
@@ -53,7 +53,7 @@ class Model:
             f"{self.url}/infer_image", request.model_dump()
         )
         if response_code != 200:
-            raise error_factory(resp)
+            raise error_factory(response_code, resp)
         return resp
 
     def infer(
@@ -73,7 +73,7 @@ class Model:
             f"{self.url}/infer", request.model_dump()
         )
         if response_code != 200:
-            raise error_factory(resp)
+            raise error_factory(response_code, resp)
         return resp
 
     def unload(self):
@@ -82,7 +82,7 @@ class Model:
             f"{self.url}/unload_model", request.model_dump()
         )
         if response_code != 200:
-            raise error_factory(resp)
+            raise error_factory(response_code, resp)
         return resp
 
     def delete(self):
@@ -91,5 +91,5 @@ class Model:
             f"{self.url}/delete_model", request.model_dump()
         )
         if response_code != 200:
-            raise error_factory(resp)
+            raise error_factory(response_code, resp)
         return resp

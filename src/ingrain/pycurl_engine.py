@@ -25,9 +25,9 @@ class PyCURLEngine:
         self.curl.setopt(pycurl.CONNECTTIMEOUT, self.connect_timeout)
         self.curl.setopt(pycurl.USERAGENT, self.user_agent)
         self.curl.setopt(pycurl.CAINFO, certifi.where())
-        
+
         self.curl.setopt(pycurl.TCP_NODELAY, 1)
-        self.curl.setopt(pycurl.ENCODING, 'gzip, deflate')
+        self.curl.setopt(pycurl.ENCODING, "gzip, deflate")
         self.curl.setopt(pycurl.FORBID_REUSE, 0)
         self.curl.setopt(pycurl.FRESH_CONNECT, 0)
         self.curl.setopt(pycurl.TCP_KEEPALIVE, 1)

@@ -3,6 +3,9 @@ from ingrain.models.models import (
     GenericModelRequest,
     SentenceTransformerModelRequest,
     OpenCLIPModelRequest,
+    TextInferenceRequest,
+    ImageInferenceRequest,
+    InferenceRequest,
 )
 from ingrain.model import Model
 from ingrain.ingrain_errors import error_factory
@@ -90,4 +93,66 @@ class Client:
         )
         if response_code != 200:
             raise error_factory(resp)
+        return resp
+
+    def infer_text(
+        self,
+        name: str,
+        pretrained: Union[str, None] = None,
+        text: Union[List[str], str] = [],
+        normalize: bool = True,
+    ):
+        request = TextInferenceRequest(
+            name=name,
+            text=text,
+            pretrained=pretrained,
+            normalize=normalize,
+        )
+        resp, response_code = self.requestor.post(
+            f"{self.url}/infer_text", request.model_dump()
+        )
+        if response_code != 200:
+            raise error_factory(response_code, resp)
+        return resp
+
+    def infer_image(
+        self,
+        name: str,
+        pretrained: Union[str, None] = None,
+        image: Union[List[str], str] = [],
+        normalize: bool = True,
+    ):
+        request = ImageInferenceRequest(
+            name=name,
+            image=image,
+            pretrained=pretrained,
+            normalize=normalize,
+        )
+        resp, response_code = self.requestor.post(
+            f"{self.url}/infer_image", request.model_dump()
+        )
+        if response_code != 200:
+            raise error_factory(response_code, resp)
+        return resp
+
+    def infer(
+        self,
+        name: str,
+        pretrained: Union[str, None] = None,
+        text: Optional[Union[List[str], str]] = None,
+        image: Optional[Union[List[str], str]] = None,
+        normalize: bool = True,
+    ):
+        request = InferenceRequest(
+            name=name,
+            text=text,
+            image=image,
+            pretrained=pretrained,
+            normalize=normalize,
+        )
+        resp, response_code = self.requestor.post(
+            f"{self.url}/infer", request.model_dump()
+        )
+        if response_code != 200:
+            raise error_factory(response_code, resp)
         return resp
