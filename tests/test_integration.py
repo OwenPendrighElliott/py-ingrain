@@ -60,7 +60,7 @@ def test_infer_text():
     load_sentence_transformer_model()
     test_text = "This is a test sentence."
     response = CLIENT.infer_text(name=SENTENCE_TRANSFORMER_MODEL, text=test_text)
-    assert "embedding" in response
+    assert "embeddings" in response
     assert "processingTimeMs" in response
 
 
@@ -72,7 +72,7 @@ def test_infer_image():
     response = CLIENT.infer_image(
         name=OPENCLIP_MODEL, pretrained=OPENCLIP_PRETRAINED, image=test_image
     )
-    assert "embedding" in response
+    assert "embeddings" in response
     assert "processingTimeMs" in response
 
 
@@ -90,12 +90,12 @@ def test_infer_text_image():
         text=test_texts,
         image=test_image,
     )
-    assert "text_embeddings" in response
-    assert "image_embeddings" in response
-    assert len(response["text_embeddings"]) == 2
+    assert "textEmbeddings" in response
+    assert "imageEmbeddings" in response
+    assert len(response["textEmbeddings"]) == 2
 
-    image_embeddings_arr = np.array(response["image_embeddings"])
-    text_embeddings_arr = np.array(response["text_embeddings"])
+    image_embeddings_arr = np.array(response["imageEmbeddings"])
+    text_embeddings_arr = np.array(response["textEmbeddings"])
 
     image_text_similarities = np.dot(image_embeddings_arr, text_embeddings_arr.T)
     assert image_text_similarities[0, 0] < image_text_similarities[0, 1]
@@ -142,4 +142,4 @@ def test_repository_models():
 @pytest.mark.integration
 def test_metrics():
     check_server_running()
-    assert "model_stats" in CLIENT.metrics()
+    assert "modelStats" in CLIENT.metrics()

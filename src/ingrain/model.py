@@ -1,11 +1,18 @@
 from ingrain.pycurl_engine import PyCURLEngine
 from ingrain.ingrain_errors import error_factory
-from ingrain.models.models import (
+from ingrain.models.request_models import (
     InferenceRequest,
     TextInferenceRequest,
     ImageInferenceRequest,
     GenericModelRequest,
 )
+from ingrain.models.response_models import (
+    InferenceResponse,
+    TextInferenceResponse,
+    ImageInferenceResponse,
+    GenericMessageResponse,
+)
+from ingrain.utils import make_response_embeddings_numpy
 from typing import Optional, Union, List
 
 
@@ -16,11 +23,13 @@ class Model:
         name: str,
         pretrained: Optional[str] = None,
         url: str = "http://localhost:8686",
+        return_numpy: bool = False,
     ):
         self.requestor = requestor
         self.url = url
         self.name = name
         self.pretrained = pretrained
+        self.return_numpy = return_numpy
 
     def __str__(self):
         return f"Model(name={self.name}, pretrained={self.pretrained})"
@@ -28,7 +37,9 @@ class Model:
     def __repr__(self):
         return self.__str__()
 
-    def infer_text(self, text: Union[List[str], str] = [], normalize: bool = True):
+    def infer_text(
+        self, text: Union[List[str], str] = [], normalize: bool = True
+    ) -> TextInferenceResponse:
         request = TextInferenceRequest(
             name=self.name,
             text=text,
@@ -40,9 +51,14 @@ class Model:
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
+
+        if self.return_numpy:
+            resp = make_response_embeddings_numpy(resp)
         return resp
 
-    def infer_image(self, image: Union[List[str], str] = [], normalize: bool = True):
+    def infer_image(
+        self, image: Union[List[str], str] = [], normalize: bool = True
+    ) -> ImageInferenceResponse:
         request = ImageInferenceRequest(
             name=self.name,
             image=image,
@@ -54,6 +70,9 @@ class Model:
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
+
+        if self.return_numpy:
+            resp = make_response_embeddings_numpy(resp)
         return resp
 
     def infer(
@@ -61,7 +80,7 @@ class Model:
         text: Optional[Union[List[str], str]] = None,
         image: Optional[Union[List[str], str]] = None,
         normalize: bool = True,
-    ):
+    ) -> InferenceResponse:
         request = InferenceRequest(
             name=self.name,
             text=text,
@@ -74,9 +93,12 @@ class Model:
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
+
+        if self.return_numpy:
+            resp = make_response_embeddings_numpy(resp)
         return resp
 
-    def unload(self):
+    def unload(self) -> GenericMessageResponse:
         request = GenericModelRequest(name=self.name, pretrained=self.pretrained)
         resp, response_code = self.requestor.post(
             f"{self.url}/unload_model", request.model_dump()
@@ -85,7 +107,7 @@ class Model:
             raise error_factory(response_code, resp)
         return resp
 
-    def delete(self):
+    def delete(self) -> GenericMessageResponse:
         request = GenericModelRequest(name=self.name, pretrained=self.pretrained)
         resp, response_code = self.requestor.post(
             f"{self.url}/delete_model", request.model_dump()
