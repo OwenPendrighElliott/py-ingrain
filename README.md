@@ -8,7 +8,7 @@ This is the Python client for the Ingrain API. It provides a simple interface to
 ## Install
     
 ```bash
-pip install .
+pip install ingrain
 ```
 
 ## Dev Setup
