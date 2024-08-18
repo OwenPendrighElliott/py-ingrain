@@ -1,7 +1,7 @@
 # Ingrain Python Client
 
 [![PyPI Version](https://img.shields.io/pypi/v/ingrain)](https://pypi.org/project/ingrain/)
-![Test Status](https://github.com/your-username/your-repo/actions/workflows/test.yml/badge.svg)
+![Test Status](https://github.com/OwenPendrighElliott/py-ingrain/actions/workflows/test.yml/badge.svg)
 
 This is the Python client for the Ingrain API. It provides a simple interface to interact with the Ingrain API.
 
