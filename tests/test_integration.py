@@ -3,7 +3,8 @@ import pytest
 import ingrain
 import numpy as np
 
-BASE_URL = "http://127.0.0.1:8686"
+INFERENCE_BASE_URL = "http://127.0.0.1:8686"
+MODEL_BASE_URL = "http://127.0.0.1:8687"
 
 # test models
 SENTENCE_TRANSFORMER_MODEL = "intfloat/e5-small-v2"
@@ -13,12 +14,18 @@ OPENCLIP_PRETRAINED = "laion2b_s34b_b79k"
 
 @pytest.fixture
 def client():
-    return ingrain.Client(url=BASE_URL)
+    return ingrain.Client(
+        inference_server_url=INFERENCE_BASE_URL, model_server_url=MODEL_BASE_URL
+    )
 
 
 @pytest.fixture
 def client_numpy():
-    return ingrain.Client(url=BASE_URL, return_numpy=True)
+    return ingrain.Client(
+        inference_server_url=INFERENCE_BASE_URL,
+        model_server_url=MODEL_BASE_URL,
+        return_numpy=True,
+    )
 
 
 def check_server_running(client: ingrain.Client):
@@ -36,7 +43,10 @@ def load_sentence_transformer_model(client: ingrain.Client):
 @pytest.mark.integration
 def test_health(client: ingrain.Client):
     check_server_running(client)
-    assert client.health() == {"message": "The server is running."}
+    health_resp = client.health()
+    assert len(health_resp) == 2
+    assert health_resp[0] == {"message": "The inference server is running."}
+    assert health_resp[1] == {"message": "The model server is running."}
 
 
 @pytest.mark.integration

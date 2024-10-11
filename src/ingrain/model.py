@@ -22,11 +22,13 @@ class Model:
         requestor: PyCURLEngine,
         name: str,
         pretrained: Optional[str] = None,
-        url: str = "http://localhost:8686",
+        inference_server_url: str = "http://localhost:8686",
+        model_server_url: str = "http://localhost:8687",
         return_numpy: bool = False,
     ):
         self.requestor = requestor
-        self.url = url
+        self.inference_server_url = inference_server_url
+        self.model_server_url = model_server_url
         self.name = name
         self.pretrained = pretrained
         self.return_numpy = return_numpy
@@ -47,7 +49,7 @@ class Model:
             normalize=normalize,
         )
         resp, response_code = self.requestor.post(
-            f"{self.url}/infer_text", request.model_dump()
+            f"{self.inference_server_url}/infer_text", request.model_dump()
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
@@ -66,7 +68,7 @@ class Model:
             normalize=normalize,
         )
         resp, response_code = self.requestor.post(
-            f"{self.url}/infer_image", request.model_dump()
+            f"{self.inference_server_url}/infer_image", request.model_dump()
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
@@ -89,7 +91,7 @@ class Model:
             normalize=normalize,
         )
         resp, response_code = self.requestor.post(
-            f"{self.url}/infer", request.model_dump()
+            f"{self.inference_server_url}/infer", request.model_dump()
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
@@ -101,7 +103,7 @@ class Model:
     def unload(self) -> GenericMessageResponse:
         request = GenericModelRequest(name=self.name, pretrained=self.pretrained)
         resp, response_code = self.requestor.post(
-            f"{self.url}/unload_model", request.model_dump()
+            f"{self.model_server_url}/unload_model", request.model_dump()
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
@@ -110,7 +112,7 @@ class Model:
     def delete(self) -> GenericMessageResponse:
         request = GenericModelRequest(name=self.name, pretrained=self.pretrained)
         resp, response_code = self.requestor.post(
-            f"{self.url}/delete_model", request.model_dump()
+            f"{self.model_server_url}/delete_model", request.model_dump()
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
