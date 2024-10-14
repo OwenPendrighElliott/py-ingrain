@@ -152,7 +152,7 @@ class Client:
             retries=retries,
         )
         if response_code != 200:
-            raise error_factory(response_code, response_code, resp)
+            raise error_factory(response_code, resp)
 
         if self.return_numpy:
             resp = make_response_embeddings_numpy(resp)
@@ -178,7 +178,7 @@ class Client:
             retries=retries,
         )
         if response_code != 200:
-            raise error_factory(response_code, response_code, resp)
+            raise error_factory(response_code, resp)
 
         if self.return_numpy:
             resp = make_response_embeddings_numpy(resp)
@@ -204,7 +204,7 @@ class Client:
             f"{self.inference_server_url}/infer", request.model_dump(), retries=retries
         )
         if response_code != 200:
-            raise error_factory(response_code, response_code, resp)
+            raise error_factory(response_code, resp)
 
         if self.return_numpy:
             resp = make_response_embeddings_numpy(resp)
