@@ -111,7 +111,7 @@ class Model:
 
     def delete(self) -> GenericMessageResponse:
         request = GenericModelRequest(name=self.name, pretrained=self.pretrained)
-        resp, response_code = self.requestor.post(
+        resp, response_code = self.requestor.delete(
             f"{self.model_server_url}/delete_model", request.model_dump()
         )
         if response_code != 200:
