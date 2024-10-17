@@ -125,7 +125,7 @@ class Client:
         self, name: str, pretrained: Union[str, None] = None
     ) -> GenericMessageResponse:
         request = GenericModelRequest(name=name, pretrained=pretrained)
-        resp, response_code = self.requestor.post(
+        resp, response_code = self.requestor.delete(
             f"{self.model_server_url}/delete_model", request.model_dump()
         )
         if response_code != 200:

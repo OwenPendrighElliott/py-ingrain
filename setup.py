@@ -14,7 +14,7 @@ setup(
         "pytest",
     ],
     name="ingrain",
-    version="0.0.4",
+    version="0.0.5",
     author="Owen Elliott",
     author_email="none@none.com",
     description="Python client for the ingrain server",

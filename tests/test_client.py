@@ -75,10 +75,10 @@ def test_unload_model(client: ingrain.Client, mock_requestor):
 
 
 def test_delete_model(client: ingrain.Client, mock_requestor):
-    mock_requestor.post.return_value = ({"success": True}, 200)
+    mock_requestor.delete.return_value = ({"success": True}, 200)
     response = client.delete_model("model_name")
     assert response == {"success": True}
-    mock_requestor.post.assert_called_once()
+    mock_requestor.delete.assert_called_once()
 
 
 def test_infer_text(client: ingrain.Client, mock_requestor):

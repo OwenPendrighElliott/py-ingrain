@@ -84,12 +84,13 @@ def test_put(engine, mock_curl):
 
 
 def test_delete(engine, mock_curl):
+    request_data = {"delete": "value"}
     response_data = {"deleted": True}
     mock_curl_response(mock_curl, response_data)
 
     url = "http://example.com/test"
 
-    response, code = engine.delete(url)
+    response, code = engine.delete(url, request_data)
 
     assert response == response_data
     assert code == 200

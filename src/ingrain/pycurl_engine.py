@@ -66,7 +66,7 @@ class PyCURLEngine:
         self.curl.setopt(pycurl.POSTFIELDS, json.dumps(data))
         return self._execute(retries=retries)
 
-    def delete(self, url: str, retries: int = 0) -> Tuple[dict, int]:
+    def delete(self, url: str, data: dict, retries: int = 0) -> Tuple[dict, int]:
         self.curl.setopt(pycurl.URL, url)
         self.curl.setopt(pycurl.CUSTOMREQUEST, "DELETE")
         return self._execute(retries=retries)
