@@ -34,6 +34,10 @@ class SentenceTransformerModelRequest(BaseModel):
     name: str
 
 
+class TimmModelRequest(BaseModel):
+    name: str
+
+
 class OpenCLIPModelRequest(BaseModel):
     name: str
     pretrained: Optional[str] = None

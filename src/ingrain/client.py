@@ -6,6 +6,7 @@ from ingrain.models.request_models import (
     TextInferenceRequest,
     ImageInferenceRequest,
     InferenceRequest,
+    TimmModelRequest,
 )
 from ingrain.models.response_models import (
     InferenceResponse,
@@ -100,6 +101,20 @@ class Client:
         resp, response_code = self.requestor.post(
             f"{self.model_server_url}/load_sentence_transformer_model",
             request.model_dump(),
+        )
+        if response_code != 200:
+            raise error_factory(response_code, resp)
+        return Model(
+            requestor=self.requestor,
+            name=name,
+            inference_server_url=self.inference_server_url,
+            model_server_url=self.model_server_url,
+        )
+
+    def load_timm_model(self, name: str) -> Model:
+        request = TimmModelRequest(name=name)
+        resp, response_code = self.requestor.post(
+            f"{self.model_server_url}/load_timm_model", request.model_dump()
         )
         if response_code != 200:
             raise error_factory(response_code, resp)

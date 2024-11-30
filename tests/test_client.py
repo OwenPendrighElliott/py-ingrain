@@ -67,6 +67,13 @@ def test_load_sentence_transformer_model(client: ingrain.Client, mock_requestor)
     mock_requestor.post.assert_called_once()
 
 
+def test_load_timm_model(client: ingrain.Client, mock_requestor):
+    mock_requestor.post.return_value = ({"success": True}, 200)
+    model = client.load_timm_model("timm_model")
+    assert isinstance(model, Model)
+    mock_requestor.post.assert_called_once()
+
+
 def test_unload_model(client: ingrain.Client, mock_requestor):
     mock_requestor.post.return_value = ({"success": True}, 200)
     response = client.unload_model("model_name")

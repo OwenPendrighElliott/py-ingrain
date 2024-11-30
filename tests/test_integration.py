@@ -57,6 +57,15 @@ def test_load_sentence_transformer_model(client: ingrain.Client):
 
 
 @pytest.mark.integration
+def test_load_timm_model(client: ingrain.Client):
+    check_server_running(client)
+    model = client.load_timm_model(
+        name="hf_hub:timm/mobilenetv4_conv_medium.e250_r384_in12k_ft_in1k"
+    )
+    assert model.name == "hf_hub:timm/mobilenetv4_conv_medium.e250_r384_in12k_ft_in1k"
+
+
+@pytest.mark.integration
 def test_load_loaded_sentence_transformer_model(client: ingrain.Client):
     check_server_running(client)
     load_sentence_transformer_model(client)
