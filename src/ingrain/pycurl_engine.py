@@ -47,6 +47,9 @@ class PyCURLEngine:
                 continue
             break
 
+        if resp_code >= 500:
+            return {"message": response.getvalue().decode()}, resp_code
+
         return json.loads(response.getvalue()), resp_code
 
     def post(self, url: str, data: dict, retries: int = 0) -> Tuple[dict, int]:

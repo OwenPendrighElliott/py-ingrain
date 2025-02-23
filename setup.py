@@ -9,6 +9,7 @@ setup(
         "pycurl",
         "pydantic>=2.0.0",
         "packaging",
+        "numpy",
     ],
     tests_require=[
         "pytest",
