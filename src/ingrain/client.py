@@ -1,12 +1,10 @@
 from ingrain.pycurl_engine import PyCURLEngine
 from ingrain.models.request_models import (
-    GenericModelRequest,
-    SentenceTransformerModelRequest,
-    OpenCLIPModelRequest,
+    LoadModelRequest,
+    UnLoadModelRequest,
     TextInferenceRequest,
     ImageInferenceRequest,
     InferenceRequest,
-    TimmModelRequest,
 )
 from ingrain.models.response_models import (
     InferenceResponse,
@@ -20,7 +18,7 @@ from ingrain.models.response_models import (
 from ingrain.model import Model
 from ingrain.utils import make_response_embeddings_numpy
 from ingrain.ingrain_errors import error_factory
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Literal
 
 
 class Client:
@@ -81,26 +79,12 @@ class Client:
             raise error_factory(response_code, resp)
         return resp
 
-    def load_clip_model(self, name: str, pretrained: Union[str, None] = None) -> Model:
-        request = OpenCLIPModelRequest(name=name, pretrained=pretrained)
+    def load_model(
+        self, name: str, library: Literal["open_clip", "sentence_transformers", "timm"]
+    ) -> Model:
+        request = LoadModelRequest(name=name, library=library)
         resp, response_code = self.requestor.post(
-            f"{self.model_server_url}/load_clip_model", request.model_dump()
-        )
-        if response_code != 200:
-            raise error_factory(response_code, resp)
-        return Model(
-            requestor=self.requestor,
-            name=name,
-            pretrained=pretrained,
-            inference_server_url=self.inference_server_url,
-            model_server_url=self.model_server_url,
-        )
-
-    def load_sentence_transformer_model(self, name: str) -> Model:
-        request = SentenceTransformerModelRequest(name=name)
-        resp, response_code = self.requestor.post(
-            f"{self.model_server_url}/load_sentence_transformer_model",
-            request.model_dump(),
+            f"{self.model_server_url}/load_model", request.model_dump()
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
@@ -111,24 +95,8 @@ class Client:
             model_server_url=self.model_server_url,
         )
 
-    def load_timm_model(self, name: str) -> Model:
-        request = TimmModelRequest(name=name)
-        resp, response_code = self.requestor.post(
-            f"{self.model_server_url}/load_timm_model", request.model_dump()
-        )
-        if response_code != 200:
-            raise error_factory(response_code, resp)
-        return Model(
-            requestor=self.requestor,
-            name=name,
-            inference_server_url=self.inference_server_url,
-            model_server_url=self.model_server_url,
-        )
-
-    def unload_model(
-        self, name: str, pretrained: Union[str, None] = None
-    ) -> GenericMessageResponse:
-        request = GenericModelRequest(name=name, pretrained=pretrained)
+    def unload_model(self, name: str) -> GenericMessageResponse:
+        request = UnLoadModelRequest(name=name)
         resp, response_code = self.requestor.post(
             f"{self.model_server_url}/unload_model", request.model_dump()
         )
@@ -136,10 +104,8 @@ class Client:
             raise error_factory(response_code, resp)
         return resp
 
-    def delete_model(
-        self, name: str, pretrained: Union[str, None] = None
-    ) -> GenericMessageResponse:
-        request = GenericModelRequest(name=name, pretrained=pretrained)
+    def delete_model(self, name: str) -> GenericMessageResponse:
+        request = UnLoadModelRequest(name=name)
         resp, response_code = self.requestor.delete(
             f"{self.model_server_url}/delete_model", request.model_dump()
         )

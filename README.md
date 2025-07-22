@@ -13,10 +13,7 @@ pip install ingrain
 
 ## Dev Setup
 ```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-pip install -e .
+uv sync --dev
 ```
 
 ### Testing
@@ -24,11 +21,11 @@ pip install -e .
 #### Unit tests
 
 ```bash
-pytest
+uv run pytest
 ```
 
 #### Integration tests and unit tests
 
 ```bash
-pytest --integration
+uv run pytest --integration
 ```

@@ -1,3 +1,22 @@
+[project]
+name = "ingrain"
+version = "0.1.0"
+description = "Python client for the ingrain server"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "certifi>=2025.7.14",
+    "numpy>=2.3.1",
+    "pycurl>=7.45.6",
+    "pydantic>=2.11.7",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "pytest>=8.4.1",
+]
+
 [build-system]
 requires = ["setuptools>=42"]
 build-backend = "setuptools.build_meta"

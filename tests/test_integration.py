@@ -8,8 +8,7 @@ MODEL_BASE_URL = "http://127.0.0.1:8687"
 
 # test models
 SENTENCE_TRANSFORMER_MODEL = "intfloat/e5-small-v2"
-OPENCLIP_MODEL = "ViT-B-32"
-OPENCLIP_PRETRAINED = "laion2b_s34b_b79k"
+OPENCLIP_MODEL = "hf-hub:laion/CLIP-ViT-B-32-laion2B-s34B-b79K"
 
 
 @pytest.fixture
@@ -33,11 +32,13 @@ def check_server_running(client: ingrain.Client):
 
 
 def load_openclip_model(client: ingrain.Client):
-    model = client.load_clip_model(name=OPENCLIP_MODEL, pretrained=OPENCLIP_PRETRAINED)
+    model = client.load_model(name=OPENCLIP_MODEL, library="open_clip")
 
 
 def load_sentence_transformer_model(client: ingrain.Client):
-    model = client.load_sentence_transformer_model(name=SENTENCE_TRANSFORMER_MODEL)
+    model = client.load_model(
+        name=SENTENCE_TRANSFORMER_MODEL, library="sentence_transformers"
+    )
 
 
 @pytest.mark.integration
@@ -52,15 +53,18 @@ def test_health(client: ingrain.Client):
 @pytest.mark.integration
 def test_load_sentence_transformer_model(client: ingrain.Client):
     check_server_running(client)
-    model = client.load_sentence_transformer_model(name=SENTENCE_TRANSFORMER_MODEL)
+    model = client.load_model(
+        name=SENTENCE_TRANSFORMER_MODEL, library="sentence_transformers"
+    )
     assert model.name == SENTENCE_TRANSFORMER_MODEL
 
 
 @pytest.mark.integration
 def test_load_timm_model(client: ingrain.Client):
     check_server_running(client)
-    model = client.load_timm_model(
-        name="hf_hub:timm/mobilenetv4_conv_medium.e250_r384_in12k_ft_in1k"
+    model = client.load_model(
+        name="hf_hub:timm/mobilenetv4_conv_medium.e250_r384_in12k_ft_in1k",
+        library="timm",
     )
     assert model.name == "hf_hub:timm/mobilenetv4_conv_medium.e250_r384_in12k_ft_in1k"
 
@@ -69,16 +73,17 @@ def test_load_timm_model(client: ingrain.Client):
 def test_load_loaded_sentence_transformer_model(client: ingrain.Client):
     check_server_running(client)
     load_sentence_transformer_model(client)
-    model = client.load_sentence_transformer_model(name=SENTENCE_TRANSFORMER_MODEL)
+    model = client.load_model(
+        name=SENTENCE_TRANSFORMER_MODEL, library="sentence_transformers"
+    )
     assert model.name == SENTENCE_TRANSFORMER_MODEL
 
 
 @pytest.mark.integration
 def test_load_clip_model(client: ingrain.Client):
     check_server_running(client)
-    model = client.load_clip_model(name=OPENCLIP_MODEL, pretrained=OPENCLIP_PRETRAINED)
+    model = client.load_model(name=OPENCLIP_MODEL, library="open_clip")
     assert model.name == OPENCLIP_MODEL
-    assert model.pretrained == OPENCLIP_PRETRAINED
 
 
 @pytest.mark.integration
@@ -96,7 +101,9 @@ def test_infer_text_from_model(client: ingrain.Client):
     check_server_running(client)
     load_sentence_transformer_model(client)
     test_text = "This is a test sentence."
-    model = client.load_sentence_transformer_model(name=SENTENCE_TRANSFORMER_MODEL)
+    model = client.load_model(
+        name=SENTENCE_TRANSFORMER_MODEL, library="sentence_transformers"
+    )
     response = model.infer_text(text=test_text)
     assert "embeddings" in response
     assert "processingTimeMs" in response
@@ -107,9 +114,7 @@ def test_infer_image(client: ingrain.Client):
     check_server_running(client)
     load_openclip_model(client)
     test_image = "data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAOAAAADgCAIAAACVT/22AAACkElEQVR4nOzUMQ0CYRgEUQ5wgwAUnA+EUKKJBkeowAHVJd/kz3sKtpjs9fH9nDjO/npOT1jKeXoA/CNQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKRtl/t7esNSbvs2PWEpHpQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIl7RcAAP//iL8GbQ2nM1wAAAAASUVORK5CYII="
-    response = client.infer_image(
-        name=OPENCLIP_MODEL, pretrained=OPENCLIP_PRETRAINED, image=test_image
-    )
+    response = client.infer_image(name=OPENCLIP_MODEL, image=test_image)
     assert "embeddings" in response
     assert "processingTimeMs" in response
 
@@ -119,7 +124,7 @@ def test_infer_image_from_model(client: ingrain.Client):
     check_server_running(client)
     load_openclip_model(client)
     test_image = "data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAOAAAADgCAIAAACVT/22AAACkElEQVR4nOzUMQ0CYRgEUQ5wgwAUnA+EUKKJBkeowAHVJd/kz3sKtpjs9fH9nDjO/npOT1jKeXoA/CNQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKRtl/t7esNSbvs2PWEpHpQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIl7RcAAP//iL8GbQ2nM1wAAAAASUVORK5CYII="
-    model = client.load_clip_model(name=OPENCLIP_MODEL, pretrained=OPENCLIP_PRETRAINED)
+    model = client.load_model(name=OPENCLIP_MODEL, library="open_clip")
     response = model.infer_image(image=test_image)
     assert "embeddings" in response
     assert "processingTimeMs" in response
@@ -135,7 +140,6 @@ def test_infer_text_image(client: ingrain.Client):
     test_texts = ["A green image", "A pink image"]
     response = client.infer(
         name=OPENCLIP_MODEL,
-        pretrained=OPENCLIP_PRETRAINED,
         text=test_texts,
         image=test_image,
     )
@@ -160,7 +164,6 @@ def test_infer_text_image_numpy_client(client_numpy: ingrain.Client):
     test_texts = ["A green image", "A pink image"]
     response = client_numpy.infer(
         name=OPENCLIP_MODEL,
-        pretrained=OPENCLIP_PRETRAINED,
         text=test_texts,
         image=test_image,
     )
@@ -187,13 +190,13 @@ def compare_numpy_and_normal_client(
     load_sentence_transformer_model(client)
     load_sentence_transformer_model(client_numpy)
     test_text = "This is a test sentence."
-    normal_model = client.load_sentence_transformer_model(
-        name=SENTENCE_TRANSFORMER_MODEL
+    normal_model = client.load_model(
+        name=SENTENCE_TRANSFORMER_MODEL, library="sentence_transformers"
     )
     normal_response = normal_model.infer_text(text=test_text)
 
-    numpy_model = client_numpy.load_sentence_transformer_model(
-        name=SENTENCE_TRANSFORMER_MODEL
+    numpy_model = client_numpy.load_model(
+        name=SENTENCE_TRANSFORMER_MODEL, library="sentence_transformers"
     )
     numpy_response = numpy_model.infer_text(text=test_text)
 
@@ -227,7 +230,7 @@ def test_delete_model(client: ingrain.Client):
 def test_delete_clip_model(client: ingrain.Client):
     check_server_running(client)
     load_openclip_model(client)
-    response = client.delete_model(name=OPENCLIP_MODEL, pretrained=OPENCLIP_PRETRAINED)
+    response = client.delete_model(name=OPENCLIP_MODEL)
     assert "deleted successfully" in response["message"]
 
 

@@ -4,7 +4,7 @@ from ingrain.models.request_models import (
     InferenceRequest,
     TextInferenceRequest,
     ImageInferenceRequest,
-    GenericModelRequest,
+    UnLoadModelRequest,
 )
 from ingrain.models.response_models import (
     InferenceResponse,
@@ -101,7 +101,7 @@ class Model:
         return resp
 
     def unload(self) -> GenericMessageResponse:
-        request = GenericModelRequest(name=self.name, pretrained=self.pretrained)
+        request = UnLoadModelRequest(name=self.name)
         resp, response_code = self.requestor.post(
             f"{self.model_server_url}/unload_model", request.model_dump()
         )
@@ -110,7 +110,7 @@ class Model:
         return resp
 
     def delete(self) -> GenericMessageResponse:
-        request = GenericModelRequest(name=self.name, pretrained=self.pretrained)
+        request = UnLoadModelRequest(name=self.name)
         resp, response_code = self.requestor.delete(
             f"{self.model_server_url}/delete_model", request.model_dump()
         )

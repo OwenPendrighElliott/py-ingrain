@@ -4,7 +4,7 @@ import ingrain
 client = ingrain.Client()
 print(client.health())
 
-model = client.load_sentence_transformer_model(name="intfloat/e5-small-v2")
+model = client.load_model(name="intfloat/e5-small-v2", library="sentence_transformers")
 print(client.loaded_models())
 
 

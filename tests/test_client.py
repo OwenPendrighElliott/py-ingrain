@@ -53,23 +53,9 @@ def test_metrics(client: ingrain.Client, mock_requestor):
     mock_requestor.get.assert_called_once_with("http://localhost:8686/metrics")
 
 
-def test_load_clip_model(client: ingrain.Client, mock_requestor):
+def test_load_model(client: ingrain.Client, mock_requestor):
     mock_requestor.post.return_value = ({"success": True}, 200)
-    model = client.load_clip_model("clip_model_name")
-    assert isinstance(model, Model)
-    mock_requestor.post.assert_called_once()
-
-
-def test_load_sentence_transformer_model(client: ingrain.Client, mock_requestor):
-    mock_requestor.post.return_value = ({"success": True}, 200)
-    model = client.load_sentence_transformer_model("sentence_transformer_model")
-    assert isinstance(model, Model)
-    mock_requestor.post.assert_called_once()
-
-
-def test_load_timm_model(client: ingrain.Client, mock_requestor):
-    mock_requestor.post.return_value = ({"success": True}, 200)
-    model = client.load_timm_model("timm_model")
+    model = client.load_model("clip_model_name", library="open_clip")
     assert isinstance(model, Model)
     mock_requestor.post.assert_called_once()
 
