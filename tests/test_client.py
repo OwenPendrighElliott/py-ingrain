@@ -1,7 +1,6 @@
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from ingrain.model import Model
-from ingrain.ingrain_errors import error_factory
 import ingrain
 
 

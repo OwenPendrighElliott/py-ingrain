@@ -2,8 +2,8 @@ import pycurl
 import json
 import certifi
 from io import BytesIO
-
-from typing import Tuple, List, Optional
+from ingrain import __version__ as ingrain_version
+from typing import Tuple, List
 
 
 class PyCURLEngine:
@@ -12,7 +12,7 @@ class PyCURLEngine:
         timeout: int = 600,
         connect_timeout: int = 600,
         header: List[str] = ["Content-Type: application/json"],
-        user_agent: str = "ingrain-client/1.0.0",
+        user_agent: str = f"ingrain-client/{ingrain_version}",
     ):
         self.timeout = timeout
         self.connect_timeout = connect_timeout

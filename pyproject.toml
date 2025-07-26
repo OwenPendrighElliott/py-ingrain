@@ -15,6 +15,7 @@ dependencies = [
 dev = [
     "black>=25.1.0",
     "pytest>=8.4.1",
+    "ruff>=0.12.5",
 ]
 
 [build-system]

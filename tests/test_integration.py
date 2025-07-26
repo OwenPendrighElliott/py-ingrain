@@ -28,15 +28,15 @@ def client_numpy():
 
 
 def check_server_running(client: ingrain.Client):
-    response = client.health()
+    _ = client.health()
 
 
 def load_openclip_model(client: ingrain.Client):
-    model = client.load_model(name=OPENCLIP_MODEL, library="open_clip")
+    _ = client.load_model(name=OPENCLIP_MODEL, library="open_clip")
 
 
 def load_sentence_transformer_model(client: ingrain.Client):
-    model = client.load_model(
+    _ = client.load_model(
         name=SENTENCE_TRANSFORMER_MODEL, library="sentence_transformers"
     )
 

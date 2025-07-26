@@ -91,6 +91,7 @@ class Client:
         return Model(
             requestor=self.requestor,
             name=name,
+            library=library,
             inference_server_url=self.inference_server_url,
             model_server_url=self.model_server_url,
         )

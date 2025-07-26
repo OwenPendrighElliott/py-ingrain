@@ -1,3 +1,4 @@
+import time
 import ingrain
 
 
@@ -10,7 +11,7 @@ print(client.loaded_models())
 
 embeddings = model.infer_text(text="hello world")
 print(embeddings)
-import time
+
 
 start = time.time()
 embeddings = model.infer_text(text=["hello world", "goodbye world"])

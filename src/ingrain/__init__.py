@@ -1,5 +1,5 @@
-__version__ = "0.0.6"
+__version__ = "0.1.0"
 
-from ingrain.client import Client
-from ingrain.model import Model
-from ingrain.pycurl_engine import PyCURLEngine
+from ingrain.client import Client as Client
+from ingrain.model import Model as Model
+from ingrain.pycurl_engine import PyCURLEngine as PyCURLEngine
