@@ -23,9 +23,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          pip install pytest
-          pip install .
-
+          uv sync --dev
+      - name: Run ruff
+        run: uv run ruff check .
+      - name: Run black
+        run: uv run black --check .
       - name: Run tests
-        run: pytest
+        run: uv run pytest
