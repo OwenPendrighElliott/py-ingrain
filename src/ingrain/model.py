@@ -46,7 +46,6 @@ class Model:
         request = TextInferenceRequest(
             name=self.name,
             text=text,
-            pretrained=self.pretrained,
             normalize=normalize,
         )
         resp, response_code = self.requestor.post(
@@ -65,7 +64,6 @@ class Model:
         request = ImageInferenceRequest(
             name=self.name,
             image=image,
-            pretrained=self.pretrained,
             normalize=normalize,
         )
         resp, response_code = self.requestor.post(
@@ -88,7 +86,6 @@ class Model:
             name=self.name,
             text=text,
             image=image,
-            pretrained=self.pretrained,
             normalize=normalize,
         )
         resp, response_code = self.requestor.post(

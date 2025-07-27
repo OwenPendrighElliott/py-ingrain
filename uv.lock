@@ -71,7 +71,7 @@ wheels = [
 
 [[package]]
 name = "ingrain"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "certifi" },
@@ -89,10 +89,10 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "certifi", specifier = ">=2025.7.14" },
-    { name = "numpy", specifier = ">=2.3.1" },
-    { name = "pycurl", specifier = ">=7.45.6" },
-    { name = "pydantic", specifier = ">=2.11.7" },
+    { name = "certifi", specifier = ">=2025" },
+    { name = "numpy", specifier = ">=2" },
+    { name = "pycurl", specifier = ">=7" },
+    { name = "pydantic", specifier = ">=2" },
 ]
 
 [package.metadata.requires-dev]
