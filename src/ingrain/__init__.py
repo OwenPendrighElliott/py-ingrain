@@ -1,4 +1,4 @@
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from ingrain.client import Client as Client
 from ingrain.model import Model as Model
