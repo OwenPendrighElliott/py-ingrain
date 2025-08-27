@@ -1,6 +1,6 @@
 [project]
 name = "ingrain"
-version = "0.1.1"
+version = "0.2.0"
 description = "Python client for the ingrain server"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -15,7 +15,7 @@ dependencies = [
 dev = [
     "black>=25.1.0",
     "pytest>=8.4.1",
-    "ruff>=0.12.5",
+    "ruff>=0.12.10",
 ]
 
 [build-system]

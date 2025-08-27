@@ -3,7 +3,8 @@ import json
 import certifi
 from io import BytesIO
 from ingrain import __version__ as ingrain_version
-from typing import Tuple, List
+from ingrain.ingrain_errors import error_factory
+from typing import Tuple, List, Any
 
 
 class PyCURLEngine:
@@ -33,8 +34,10 @@ class PyCURLEngine:
         self.curl.setopt(pycurl.TCP_KEEPALIVE, 1)
         self.curl.setopt(pycurl.DNS_CACHE_TIMEOUT, 3600)
 
-    def _execute(self, retries: int = 0) -> Tuple[dict, int]:
+    def _execute(self, retries: int = 0) -> Tuple[dict[str, Any], int]:
         attempts = 0
+        response = BytesIO()
+        resp_code = 0
         while attempts <= retries:
             response = BytesIO()
             self.curl.setopt(pycurl.WRITEFUNCTION, response.write)
@@ -47,32 +50,41 @@ class PyCURLEngine:
                 continue
             break
 
+        if resp_code != 200:
+            raise error_factory(resp_code, json.loads(response.getvalue()))
+
         return json.loads(response.getvalue()), resp_code
 
-    def post(self, url: str, data: dict, retries: int = 0) -> Tuple[dict, int]:
+    def post(
+        self, url: str, data: dict, retries: int = 0
+    ) -> Tuple[dict[str, Any], int]:
         self.curl.setopt(pycurl.URL, url)
         self.curl.setopt(pycurl.CUSTOMREQUEST, "POST")
         self.curl.setopt(pycurl.POSTFIELDS, json.dumps(data))
         return self._execute(retries=retries)
 
-    def get(self, url: str, retries: int = 0) -> Tuple[dict, int]:
+    def get(self, url: str, retries: int = 0) -> Tuple[dict[str, Any], int]:
         self.curl.setopt(pycurl.URL, url)
         self.curl.setopt(pycurl.CUSTOMREQUEST, "GET")
         return self._execute(retries=retries)
 
-    def put(self, url: str, data: dict, retries: int = 0) -> Tuple[dict, int]:
+    def put(self, url: str, data: dict, retries: int = 0) -> Tuple[dict[str, Any], int]:
         self.curl.setopt(pycurl.URL, url)
         self.curl.setopt(pycurl.CUSTOMREQUEST, "PUT")
         self.curl.setopt(pycurl.POSTFIELDS, json.dumps(data))
         return self._execute(retries=retries)
 
-    def delete(self, url: str, data: dict, retries: int = 0) -> Tuple[dict, int]:
+    def delete(
+        self, url: str, data: dict, retries: int = 0
+    ) -> Tuple[dict[str, Any], int]:
         self.curl.setopt(pycurl.URL, url)
         self.curl.setopt(pycurl.CUSTOMREQUEST, "DELETE")
         self.curl.setopt(pycurl.POSTFIELDS, json.dumps(data))
         return self._execute(retries=retries)
 
-    def patch(self, url: str, data: dict, retries: int = 0) -> Tuple[dict, int]:
+    def patch(
+        self, url: str, data: dict, retries: int = 0
+    ) -> Tuple[dict[str, Any], int]:
         self.curl.setopt(pycurl.URL, url)
         self.curl.setopt(pycurl.CUSTOMREQUEST, "PATCH")
         self.curl.setopt(pycurl.POSTFIELDS, json.dumps(data))
