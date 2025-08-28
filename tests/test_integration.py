@@ -279,6 +279,7 @@ def test_unload_all_models(client: ingrain.Client):
     assert after == before - 2
 
 
+@pytest.mark.integration
 def test_get_model_embedding_dims(client: ingrain.Client):
     check_server_running(client)
     load_sentence_transformer_model(client)
