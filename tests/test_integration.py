@@ -277,3 +277,11 @@ def test_unload_all_models(client: ingrain.Client):
     after = len(client.loaded_models().models)
     print(client.loaded_models().models)
     assert after == before - 2
+
+
+def test_get_model_embedding_dims(client: ingrain.Client):
+    check_server_running(client)
+    load_sentence_transformer_model(client)
+    dims_response = client.model_embedding_dims(name=SENTENCE_TRANSFORMER_MODEL)
+
+    assert dims_response.embedding_size == 384
