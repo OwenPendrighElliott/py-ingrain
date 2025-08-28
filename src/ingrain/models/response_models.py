@@ -1,54 +1,60 @@
-from pydantic import BaseModel
+from ingrain.models.camel_model import CamelModel
+import numpy as np
 
 from typing import List, Optional, Dict
 
 
-class InferenceResponse(BaseModel):
-    textEmbeddings: Optional[List[List[float]]] = None
-    imageEmbeddings: Optional[List[List[float]]] = None
-    processingTimeMs: float
+class EmbeddingResponse(CamelModel):
+    text_embeddings: Optional[List[List[float]] | np.ndarray] = None
+    image_embeddings: Optional[List[List[float]] | np.ndarray] = None
+    processing_time_ms: float
 
 
-class TextInferenceResponse(BaseModel):
-    embeddings: List[List[float]]
-    processingTimeMs: float
+class TextEmbeddingResponse(CamelModel):
+    embeddings: List[List[float]] | np.ndarray
+    processing_time_ms: float
 
 
-class ImageInferenceResponse(BaseModel):
-    embeddings: List[List[float]]
-    processingTimeMs: float
+class ImageEmbeddingResponse(CamelModel):
+    embeddings: List[List[float]] | np.ndarray
+    processing_time_ms: float
 
 
-class LoadedModelResponse(BaseModel):
+class ImageClassificationResponse(CamelModel):
+    probabilities: List[List[float]] | np.ndarray
+    processing_time_ms: float
+
+
+class LoadedModelResponse(CamelModel):
     models: List[str]
 
 
-class RepositoryModel(BaseModel):
+class RepositoryModel(CamelModel):
     name: str
     state: str
 
 
-class RepositoryModelResponse(BaseModel):
+class RepositoryModelResponse(CamelModel):
     models: List[RepositoryModel]
 
 
-class GenericMessageResponse(BaseModel):
+class GenericMessageResponse(CamelModel):
     message: str
 
 
-class InferenceStats(BaseModel):
+class InferenceStats(CamelModel):
     count: Optional[str]
     ns: Optional[str]
 
 
-class BatchStats(BaseModel):
+class BatchStats(CamelModel):
     batch_size: str
     compute_input: InferenceStats
     compute_infer: InferenceStats
     compute_output: InferenceStats
 
 
-class ModelStats(BaseModel):
+class ModelStats(CamelModel):
     name: str
     version: str
     last_inference: Optional[str] = None
@@ -58,5 +64,13 @@ class ModelStats(BaseModel):
     batch_stats: Optional[List[BatchStats]] = None
 
 
-class MetricsResponse(BaseModel):
-    modelStats: List[ModelStats]
+class MetricsResponse(CamelModel):
+    model_stats: List[ModelStats]
+
+
+class ModelEmbeddingDimsResponse(CamelModel):
+    embedding_size: int
+
+
+class ModelClassificationLabelsResponse(CamelModel):
+    labels: List[str]
