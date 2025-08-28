@@ -41,6 +41,11 @@ def load_sentence_transformer_model(client: ingrain.Client):
     )
 
 
+def unload_all_models(client: ingrain.Client):
+    _ = client.unload_model(name=OPENCLIP_MODEL)
+    _ = client.unload_model(name=SENTENCE_TRANSFORMER_MODEL)
+
+
 @pytest.mark.integration
 def test_health(client: ingrain.Client):
     check_server_running(client)
@@ -259,3 +264,16 @@ def test_loaded_models(client: ingrain.Client):
 def test_repository_models(client: ingrain.Client):
     check_server_running(client)
     assert len(client.repository_models().models) >= 2
+
+
+@pytest.mark.integration
+def test_unload_all_models(client: ingrain.Client):
+    check_server_running(client)
+    load_sentence_transformer_model(client)
+    load_openclip_model(client)
+    before = len(client.loaded_models().models)
+    print(client.loaded_models().models)
+    unload_all_models(client)
+    after = len(client.loaded_models().models)
+    print(client.loaded_models().models)
+    assert after == before - 2
