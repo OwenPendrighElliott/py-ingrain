@@ -1,6 +1,7 @@
 import pycurl
 import json
 import certifi
+import urllib.parse
 from io import BytesIO
 from ingrain import __version__ as ingrain_version
 from ingrain.ingrain_errors import error_factory
@@ -63,7 +64,13 @@ class PyCURLEngine:
         self.curl.setopt(pycurl.POSTFIELDS, json.dumps(data))
         return self._execute(retries=retries)
 
-    def get(self, url: str, retries: int = 0) -> Tuple[dict[str, Any], int]:
+    def get(
+        self, url: str, params: dict | None = None, retries: int = 0
+    ) -> Tuple[dict[str, Any], int]:
+        if params:
+            query_str = urllib.parse.urlencode(params)
+            url = f"{url}?{query_str}"
+
         self.curl.setopt(pycurl.URL, url)
         self.curl.setopt(pycurl.CUSTOMREQUEST, "GET")
         return self._execute(retries=retries)

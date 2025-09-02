@@ -378,9 +378,9 @@ class Client:
             ModelClassificationLabelsResponse: Classification labels for the specified model.
         """
         req = ModelMetadataRequest(name=name)
-        resp, response_code = self.requestor.post(
+        resp, response_code = self.requestor.get(
             f"{self.model_server_url}/model_classification_labels",
-            req.model_dump(),
+            params=req.model_dump(),
             retries=retries,
         )
 
@@ -407,9 +407,9 @@ class Client:
             ModelEmbeddingDimsResponse: Embedding dimensions for the specified model.
         """
         req = ModelMetadataRequest(name=name)
-        resp, response_code = self.requestor.post(
+        resp, response_code = self.requestor.get(
             f"{self.model_server_url}/model_embedding_size",
-            req.model_dump(),
+            params=req.model_dump(),
             retries=retries,
         )
 
