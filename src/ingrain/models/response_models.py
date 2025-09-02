@@ -25,9 +25,14 @@ class ImageClassificationResponse(CamelModel):
     processing_time_ms: float
 
 
-class LoadedModelResponse(CamelModel):
-    models: List[str]
 
+class LoadedModelData(CamelModel):
+    name: str
+    library: str
+
+
+class LoadedModelResponse(CamelModel):
+    models: List[LoadedModelData]
 
 class RepositoryModel(CamelModel):
     name: str
