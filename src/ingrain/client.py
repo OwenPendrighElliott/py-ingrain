@@ -149,7 +149,7 @@ class Client:
                     batch_stats=(
                         [
                             BatchStats(
-                                batch_size=bs["batch_size"],
+                                batch_size=bs["batchSize"],
                                 compute_input=InferenceStats(**bs["computeInput"]),
                                 compute_infer=InferenceStats(**bs["computeInfer"]),
                                 compute_output=InferenceStats(**bs["computeOutput"]),
