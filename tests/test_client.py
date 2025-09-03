@@ -31,16 +31,32 @@ def test_mock_health_error(client: ingrain.Client, mock_requestor):
 
 
 def test_mock_loaded_models(client: ingrain.Client, mock_requestor):
-    mock_requestor.get.return_value = ({"models": ["model1", "model2"]}, 200)
+    mock_requestor.get.return_value = (
+        {
+            "models": [
+                {"name": "model1", "library": "lib"},
+                {"name": "model2", "library": "lib"},
+            ]
+        },
+        200,
+    )
     response = client.loaded_models()
-    assert response.models == ["model1", "model2"]
+    assert [m.name for m in response.models] == ["model1", "model2"]
     mock_requestor.get.assert_called_once_with("http://localhost:8687/loaded_models")
 
 
 def test_mock_repository_models(client: ingrain.Client, mock_requestor):
-    mock_requestor.get.return_value = ({"models": ["model1", "model2"]}, 200)
+    mock_requestor.get.return_value = (
+        {
+            "models": [
+                {"name": "model1", "state": "READY"},
+                {"name": "model2", "state": "READY"},
+            ]
+        },
+        200,
+    )
     response = client.repository_models()
-    assert response.models == ["model1", "model2"]
+    assert [m.name for m in response.models] == ["model1", "model2"]
     mock_requestor.get.assert_called_once_with(
         "http://localhost:8687/repository_models"
     )

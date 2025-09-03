@@ -1,76 +1,96 @@
-from ingrain.models.camel_model import CamelModel
+from dataclasses import dataclass
 import numpy as np
 
 from typing import List, Optional, Dict
 
 
-class EmbeddingResponse(CamelModel):
+@dataclass
+class EmbeddingResponse:
+    processing_time_ms: float
     text_embeddings: Optional[List[List[float]] | np.ndarray] = None
     image_embeddings: Optional[List[List[float]] | np.ndarray] = None
-    processing_time_ms: float
 
 
-class TextEmbeddingResponse(CamelModel):
+@dataclass
+class TextEmbeddingResponse:
     embeddings: List[List[float]] | np.ndarray
     processing_time_ms: float
 
 
-class ImageEmbeddingResponse(CamelModel):
+@dataclass
+class ImageEmbeddingResponse:
     embeddings: List[List[float]] | np.ndarray
     processing_time_ms: float
 
 
-class ImageClassificationResponse(CamelModel):
+@dataclass
+class ImageClassificationResponse:
     probabilities: List[List[float]] | np.ndarray
     processing_time_ms: float
 
 
-class LoadedModelResponse(CamelModel):
-    models: List[str]
+@dataclass
+class LoadedModel:
+    name: str
+    library: str
 
 
-class RepositoryModel(CamelModel):
+@dataclass
+class LoadedModelResponse:
+    models: List[LoadedModel]
+
+
+@dataclass
+class RepositoryModel:
     name: str
     state: str
 
 
-class RepositoryModelResponse(CamelModel):
+@dataclass
+class RepositoryModelResponse:
     models: List[RepositoryModel]
 
 
-class GenericMessageResponse(CamelModel):
+@dataclass
+class GenericMessageResponse:
     message: str
 
 
-class InferenceStats(CamelModel):
+@dataclass
+class InferenceStats:
     count: Optional[str]
     ns: Optional[str]
 
 
-class BatchStats(CamelModel):
+@dataclass
+class BatchStats:
     batch_size: str
     compute_input: InferenceStats
     compute_infer: InferenceStats
     compute_output: InferenceStats
 
 
-class ModelStats(CamelModel):
+@dataclass
+class ModelStats:
     name: str
     version: str
+    inference_stats: Dict[str, InferenceStats]
     last_inference: Optional[str] = None
     inference_count: Optional[str] = None
     execution_count: Optional[str] = None
-    inference_stats: Dict[str, InferenceStats]
     batch_stats: Optional[List[BatchStats]] = None
 
 
-class MetricsResponse(CamelModel):
+@dataclass
+class MetricsResponse:
     model_stats: List[ModelStats]
 
 
-class ModelEmbeddingDimsResponse(CamelModel):
+@dataclass
+class ModelEmbeddingDimsResponse:
     embedding_size: int
 
 
-class ModelClassificationLabelsResponse(CamelModel):
+@dataclass
+class ModelClassificationLabelsResponse:
     labels: List[str]

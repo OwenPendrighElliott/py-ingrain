@@ -1,0 +1,5 @@
+import ingrain
+
+client = ingrain.Client()
+
+print(client.metrics())

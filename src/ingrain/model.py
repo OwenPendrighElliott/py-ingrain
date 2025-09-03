@@ -63,7 +63,9 @@ class Model:
         if self.return_numpy:
             resp = make_response_data_numpy(resp)
 
-        return TextEmbeddingResponse.model_construct(**resp)
+        return TextEmbeddingResponse(
+            embeddings=resp["embeddings"], processing_time_ms=resp["processingTimeMs"]
+        )
 
     def embed_image(
         self,
@@ -90,7 +92,9 @@ class Model:
 
         if self.return_numpy:
             resp = make_response_data_numpy(resp)
-        return ImageEmbeddingResponse.model_construct(**resp)
+        return ImageEmbeddingResponse(
+            embeddings=resp["embeddings"], processing_time_ms=resp["processingTimeMs"]
+        )
 
     def embed(
         self,
@@ -117,7 +121,11 @@ class Model:
 
         if self.return_numpy:
             resp = make_response_data_numpy(resp)
-        return EmbeddingResponse.model_construct(**resp)
+        return EmbeddingResponse(
+            processing_time_ms=resp["processingTimeMs"],
+            text_embeddings=resp.get("textEmbeddings"),
+            image_embeddings=resp.get("imageEmbeddings"),
+        )
 
     def classify_image(
         self,
@@ -140,9 +148,12 @@ class Model:
 
         if self.return_numpy:
             resp = make_response_data_numpy(resp)
-        return ImageClassificationResponse.model_construct(**resp)
+        return ImageClassificationResponse(
+            probabilities=resp["probabilities"],
+            processing_time_ms=resp["processingTimeMs"],
+        )
 
-    def load_(self) -> GenericMessageResponse:
+    def load(self) -> GenericMessageResponse:
         request = LoadModelRequest(name=self.name, library=self.library)
         resp, response_code = self.requestor.post(
             f"{self.model_server_url}/load_model", request.model_dump()
@@ -150,7 +161,7 @@ class Model:
         if response_code != 200:
             raise error_factory(response_code, resp)
 
-        return GenericMessageResponse.model_construct(**resp)
+        return GenericMessageResponse(**resp)
 
     def unload(self) -> GenericMessageResponse:
         request = UnloadModelRequest(name=self.name)
@@ -159,7 +170,7 @@ class Model:
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
-        return GenericMessageResponse.model_construct(**resp)
+        return GenericMessageResponse(**resp)
 
     def delete(self) -> GenericMessageResponse:
         request = UnloadModelRequest(name=self.name)
@@ -168,4 +179,4 @@ class Model:
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
-        return GenericMessageResponse.model_construct(**resp)
+        return GenericMessageResponse(**resp)

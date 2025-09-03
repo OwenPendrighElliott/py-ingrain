@@ -14,9 +14,14 @@ from ingrain.models.response_models import (
     ImageEmbeddingResponse,
     ImageClassificationResponse,
     LoadedModelResponse,
+    LoadedModel,
     RepositoryModelResponse,
+    RepositoryModel,
     GenericMessageResponse,
     MetricsResponse,
+    ModelStats,
+    InferenceStats,
+    BatchStats,
     ModelClassificationLabelsResponse,
     ModelEmbeddingDimsResponse,
 )
@@ -71,8 +76,8 @@ class Client:
             raise error_factory(response_code_model, resp_model)
 
         return (
-            GenericMessageResponse.model_construct(**resp_inf),
-            GenericMessageResponse.model_construct(**resp_model),
+            GenericMessageResponse(**resp_inf),
+            GenericMessageResponse(**resp_model),
         )
 
     def loaded_models(self) -> LoadedModelResponse:
@@ -89,7 +94,12 @@ class Client:
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
-        return LoadedModelResponse.model_construct(**resp)
+        return LoadedModelResponse(
+            models=[
+                LoadedModel(name=m["name"], library=m["library"])
+                for m in resp["models"]
+            ]
+        )
 
     def repository_models(self) -> RepositoryModelResponse:
         """Get the list of models available in the model repository.
@@ -105,7 +115,12 @@ class Client:
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
-        return RepositoryModelResponse.model_construct(**resp)
+        return RepositoryModelResponse(
+            models=[
+                RepositoryModel(name=m["name"], state=m["state"])
+                for m in resp["models"]
+            ]
+        )
 
     def metrics(self) -> MetricsResponse:
         """Get the metrics of the inference server.
@@ -119,7 +134,35 @@ class Client:
         resp, response_code = self.requestor.get(f"{self.inference_server_url}/metrics")
         if response_code != 200:
             raise error_factory(response_code, resp)
-        return MetricsResponse.model_construct(**resp)
+        return MetricsResponse(
+            model_stats=[
+                ModelStats(
+                    name=ms["name"],
+                    version=ms["version"],
+                    inference_stats={
+                        k: InferenceStats(**ms["inferenceStats"][k])
+                        for k in ms["inferenceStats"]
+                    },
+                    last_inference=ms.get("lastInference"),
+                    inference_count=ms.get("inferenceCount"),
+                    execution_count=ms.get("executionCount"),
+                    batch_stats=(
+                        [
+                            BatchStats(
+                                batch_size=bs["batch_size"],
+                                compute_input=InferenceStats(**bs["computeInput"]),
+                                compute_infer=InferenceStats(**bs["computeInfer"]),
+                                compute_output=InferenceStats(**bs["computeOutput"]),
+                            )
+                            for bs in ms["batchStats"]
+                        ]
+                        if ms["batchStats"] is not None
+                        else None
+                    ),
+                )
+                for ms in resp["modelStats"]
+            ]
+        )
 
     def load_model(
         self, name: str, library: Literal["open_clip", "sentence_transformers", "timm"]
@@ -169,7 +212,7 @@ class Client:
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
-        return GenericMessageResponse.model_construct(**resp)
+        return GenericMessageResponse(**resp)
 
     def delete_model(self, name: str) -> GenericMessageResponse:
         """Delete a model from the model repository.
@@ -189,7 +232,7 @@ class Client:
         )
         if response_code != 200:
             raise error_factory(response_code, resp)
-        return GenericMessageResponse.model_construct(**resp)
+        return GenericMessageResponse(**resp)
 
     def embed_text(
         self,
@@ -228,7 +271,9 @@ class Client:
         if self.return_numpy:
             resp = make_response_data_numpy(resp)
 
-        return TextEmbeddingResponse.model_construct(**resp)
+        return TextEmbeddingResponse(
+            embeddings=resp["embeddings"], processing_time_ms=resp["processingTimeMs"]
+        )
 
     def embed_image(
         self,
@@ -273,7 +318,9 @@ class Client:
 
         if self.return_numpy:
             resp = make_response_data_numpy(resp)
-        return ImageEmbeddingResponse.model_construct(**resp)
+        return ImageEmbeddingResponse(
+            embeddings=resp["embeddings"], processing_time_ms=resp["processingTimeMs"]
+        )
 
     def embed(
         self,
@@ -319,7 +366,11 @@ class Client:
 
         if self.return_numpy:
             resp = make_response_data_numpy(resp)
-        return EmbeddingResponse.model_construct(**resp)
+        return EmbeddingResponse(
+            processing_time_ms=resp["processingTimeMs"],
+            text_embeddings=resp.get("textEmbeddings"),
+            image_embeddings=resp.get("imageEmbeddings"),
+        )
 
     def classify_image(
         self,
@@ -358,7 +409,10 @@ class Client:
 
         if self.return_numpy:
             resp = make_response_data_numpy(resp)
-        return ImageClassificationResponse.model_construct(**resp)
+        return ImageClassificationResponse(
+            probabilities=resp["probabilities"],
+            processing_time_ms=resp["processingTimeMs"],
+        )
 
     def model_classification_labels(
         self,
@@ -387,7 +441,7 @@ class Client:
         if response_code != 200:
             raise error_factory(response_code, resp)
 
-        return ModelClassificationLabelsResponse.model_construct(**resp)
+        return ModelClassificationLabelsResponse(**resp)
 
     def model_embedding_dims(
         self,
@@ -416,4 +470,4 @@ class Client:
         if response_code != 200:
             raise error_factory(response_code, resp)
 
-        return ModelEmbeddingDimsResponse.model_construct(**resp)
+        return ModelEmbeddingDimsResponse(embedding_size=resp["embeddingSize"])
