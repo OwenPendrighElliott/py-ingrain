@@ -16,7 +16,7 @@ def error_factory(status_code: int, body: dict) -> IngrainWebException:
     message = body.get("message")
     if message is None:
         message = body.get("error")
-    elif message is None:
+    if message is None:
         message = body.get("detail")
 
     return IngrainWebException(message or "UNKNOWN ERROR", status_code, body)

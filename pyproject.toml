@@ -1,6 +1,6 @@
 [project]
 name = "ingrain"
-version = "0.2.2"
+version = "0.2.3"
 description = "Python client for the ingrain server"
 readme = "README.md"
 requires-python = ">=3.11"

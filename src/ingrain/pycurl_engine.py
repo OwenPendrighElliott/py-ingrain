@@ -52,7 +52,10 @@ class PyCURLEngine:
             break
 
         if resp_code != 200:
-            raise error_factory(resp_code, json.loads(response.getvalue()))
+            try:
+                raise error_factory(resp_code, json.loads(response.getvalue()))
+            except json.decoder.JSONDecodeError:
+                raise error_factory(resp_code, {"error": response.getvalue()})
 
         return json.loads(response.getvalue()), resp_code
 
